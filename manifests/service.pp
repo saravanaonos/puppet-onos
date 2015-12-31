@@ -28,6 +28,15 @@ exec{ 'install openflow feature':
 exec{ 'install openflow-base feature':
         command => "/opt/onos/bin/onos 'feature:install onos-openflow-base'"
 }->
+exec{ 'install ovsdatabase feature':
+        command => "/opt/onos/bin/onos 'feature:install onos-ovsdatabase'"
+}->
+exec{ 'sleep 10 to stablize onos features':
+        command => 'sudo sleep 10;'
+}->
+exec{ 'install vtn feature':
+        command => "/opt/onos/bin/onos 'feature:install onos-app-vtn-onosfw'"
+}->
 exec{ 'add onos auto start':
         command => 'sudo echo "onos">>/opt/service',
         logoutput => "true",
