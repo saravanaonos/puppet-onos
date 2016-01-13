@@ -42,7 +42,7 @@ exec{ 'add onos auto start':
         logoutput => "true",
 }->      
 exec{ 'set public port':
-        command => "/opt/onos/bin/onos \"externalportname-set -n ens4\""
+        command => "/opt/onos/bin/onos \"externalportname-set -n ens5\""
 }      
 
 }
