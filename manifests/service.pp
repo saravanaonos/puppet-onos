@@ -41,8 +41,13 @@ exec{ 'add onos auto start':
         command => 'sudo echo "onos">>/opt/service',
         logoutput => "true",
 }->      
+file{ '/opt/set_external_port.sh':
+        source => "puppet:///modules/onos/set_external_port.sh",
+}->
 exec{ 'set public port':
-        command => "/opt/onos/bin/onos \"externalportname-set -n ens5\""
+        command => "sudo sh /opt/set_external_port.sh",
+        path => "/usr/bin:/usr/sbin:/bin:/sbin",
+
 }      
 
 }
