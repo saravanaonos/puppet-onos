@@ -51,6 +51,16 @@ firewall{'216 vxlan':
 #        service $ovs_service start ;"
 #
 #}->
+     file{ '/opt/set_external_port.sh':
+        source => "puppet:///modules/onos/set_external_port.sh",
+}->     
+     exec{ 'prepare external port':
+        command => "sudo sh /opt/set_external_port.sh",
+        path => "/usr/bin:/usr/sbin:/bin:/sbin",
+}->
+     exec{ 'remove ip on br-ex':
+        command => "su -s /bin/sh -c 'ifconfig br-ex 0.0.0.0'"
+}->
      exec { 'wait-until-onos-ready':
        command   => "curl -o /dev/null --fail --silent --head http://${manager_ip}:8181/onos/vtn/networks",
        path      => '/bin:/usr/bin',
@@ -63,16 +73,16 @@ firewall{'216 vxlan':
      exec{'Set ONOS as the manager':
         command => "su -s /bin/sh -c 'ovs-vsctl set-manager tcp:$manager_ip:6640'",
 }->
-        exec{ 'sleep 30 for ovs config stable':
+     exec{ 'sleep 30 for ovs config stable':
         command => 'sudo sleep 30;'
 }->
-        exec{'Remove manager on ovs':
+     exec{'Remove manager on ovs':
         command => "su -s /bin/sh -c 'ovs-vsctl del-manager'",
 }->
-        exec{'Remove br-int on ovs':
+     exec{'Remove br-int on ovs':
         command => "su -s /bin/sh -c 'ovs-vsctl del-br br-int'",
 }->
-        exec{'Set ONOS as the manager again':
+     exec{'Set ONOS as the manager again':
         command => "su -s /bin/sh -c 'ovs-vsctl set-manager tcp:$manager_ip:6640'",
 }
 
