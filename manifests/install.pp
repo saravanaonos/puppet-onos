@@ -39,6 +39,9 @@ file{ "/opt/$onos_pkg_name":
 file{ '/opt/networking-onos.tar':
         source =>"puppet:///modules/onos/networking-onos.tar",
 } ->
+file{ '/opt/networking-sfc.tar':
+        source =>"puppet:///modules/onos/networking-sfc.tar",
+} ->
 file{ "/opt/$jdk8_pkg_name":
         source => "puppet:///modules/onos/$jdk8_pkg_name",
 } ->
@@ -55,17 +58,20 @@ file{ '/root/.m2/repository.tar':
 exec{ "unzip packages":
         command => "tar -zvxf /opt/$onos_pkg_name -C $onos_home  --strip-components 1 --no-overwrite-dir -k;
         tar vxf /opt/networking-onos.tar -C /opt;
+        tar vxf /opt/networking-sfc.tar -C /opt;
         tar xf /opt/install_jdk8.tar -C /opt;
         tar xf /root/.m2/repository.tar -C /root/.m2/",
 } ->
 exec{ "install driver and jdk":
         command => "sh /opt/networking-onos/install_driver.sh;
+        sh /opt/networking-sfc/install_driver.sh;
         sh /opt/install_jdk8/install_jdk8.sh",
 } ->
 exec{ "clean used files":
         command => "rm -rf /opt/*.tar*;
         rm -rf /opt/install_jdk8;
         rm -rf /opt/networking-onos;
+        rm -rf /opt/networking-sfc;
         rm -rf /opt/onos_config.sh;
 	rm -rf /root/.m2/*.tar"
 }
